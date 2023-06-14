@@ -4,18 +4,28 @@ import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // Stub
 public class PostRepository {
-  private int postId = 1;
+  private AtomicInteger postId = new AtomicInteger(1);
   private List<Post> posts = new CopyOnWriteArrayList();
 
   public List<Post> all() {
     return this.posts;
   }
 
-  public Post getById(long id) {
+  public Optional<Post> getById(long id) {
+    //return Optional.empty();
+    for (int i = 0; i < this.posts.size(); i++) {
+      return posts.stream().filter(post -> post.getId() == id).findFirst();
+    }
+    throw new NotFoundException("Post not found");
+  }
+
+  /*public Post getById(long id) {
     for (int i = 0; i < this.posts.size(); i++) {
       Post searchPost = this.posts.get(i);
       if (searchPost.getId() == id) {
@@ -23,12 +33,12 @@ public class PostRepository {
       }
     }
     throw new NotFoundException("Post not found");
-  }
+  }*/
 
   public Post save(Post post) {
     if (post.getId() == 0) {
-      post.setId(postId);
-      postId++;
+      post.setId(postId.longValue());
+      postId.addAndGet(1);
     } else {
       for (Post searchPost: this.posts) {
         if (post.getId() == searchPost.getId()){

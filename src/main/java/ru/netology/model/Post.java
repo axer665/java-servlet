@@ -1,5 +1,7 @@
 package ru.netology.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Post {
   private long id;
   private String content;

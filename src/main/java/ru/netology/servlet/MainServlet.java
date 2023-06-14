@@ -7,13 +7,13 @@ import ru.netology.service.PostService;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class MainServlet extends HttpServlet {
   private PostController controller;
 
   @Override
   public void init() {
-    System.out.print("INIT");
     final var repository = new PostRepository();
     final var service = new PostService(repository);
     controller = new PostController(service);
@@ -26,33 +26,50 @@ public class MainServlet extends HttpServlet {
       final var path = req.getRequestURI();
       final var method = req.getMethod();
       // primitive routing
-      if (method.equals("GET") && path.equals("/api/posts")) {
-        controller.all(resp);
-        return;
-      }
-      if (method.equals("GET") && path.matches("/api/posts/\\d+")) {
-        // easy way
-        final var id = Long.parseLong(path.substring(path.lastIndexOf("/")).substring(1));
-        controller.getById(id, resp);
-        return;
-      }
 
-      if (method.equals("POST") && path.equals("/api/posts")) {
-        controller.save(req.getReader(), resp);
-        return;
+      if (method.equals("GET")) {
+        this.get(path, resp);
+      } else if (method.equals("POST")) {
+        this.post(path, req, resp);
+      } else if (method.equals("DELETE")) {
+        this.delete(path, req, resp);
+      } else {
+        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
       }
-
-      if (method.equals("DELETE") && path.matches("/api/posts/\\d+")) {
-        // easy way
-        final var id = Long.parseLong(path.substring(path.lastIndexOf("/")).substring(1));
-        controller.removeById(id, resp);
-        return;
-      }
-      resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-
     } catch (Exception e) {
       e.printStackTrace();
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // метод, обрабатывающий GET-запросы
+  private void get(String path, HttpServletResponse resp) throws IOException {
+    if (path.equals("/api/posts")) {
+      controller.all(resp);
+    } else if (path.matches("/api/posts/\\d+")) {
+      final var id = Long.parseLong(path.substring(path.lastIndexOf("/")).substring(1));
+      controller.getById(id, resp);
+    } else {
+      resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+  }
+
+  // метод, обрабатывающий POST-запросы
+  private void post(String path, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    if (path.equals("/api/posts")) {
+      controller.save(req.getReader(), resp);
+    } else {
+      resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+  }
+
+  // метод, обрабатывающий DELETE-запросы
+  private void delete(String path, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    if (path.matches("/api/posts/\\d+")) {
+      final var id = Long.parseLong(path.substring(path.lastIndexOf("/")).substring(1));
+      controller.removeById(id, resp);
+    } else {
+      resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
   }
 }

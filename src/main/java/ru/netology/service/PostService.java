@@ -4,6 +4,7 @@ import ru.netology.model.Post;
 import ru.netology.repository.PostRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PostService {
   private final PostRepository repository;
@@ -16,7 +17,7 @@ public class PostService {
     return repository.all();
   }
 
-  public Post getById(long id) {
+  public Optional<Post> getById(long id) {
     return repository.getById(id);
   }
 
