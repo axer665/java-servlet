@@ -44,7 +44,7 @@ public class MainServlet extends HttpServlet {
 
   // метод, обрабатывающий GET-запросы
   private void get(String path, HttpServletResponse resp) throws IOException {
-    if (path.equals("/api/posts")) {
+    if (path.equals("/api/posts/")) {
       controller.all(resp);
     } else if (path.matches("/api/posts/\\d+")) {
       final var id = Long.parseLong(path.substring(path.lastIndexOf("/")).substring(1));
@@ -56,7 +56,7 @@ public class MainServlet extends HttpServlet {
 
   // метод, обрабатывающий POST-запросы
   private void post(String path, HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    if (path.equals("/api/posts")) {
+    if (path.equals("/api/posts/")) {
       controller.save(req.getReader(), resp);
     } else {
       resp.setStatus(HttpServletResponse.SC_NOT_FOUND);

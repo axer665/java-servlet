@@ -18,22 +18,8 @@ public class PostRepository {
   }
 
   public Optional<Post> getById(long id) {
-    //return Optional.empty();
-    for (int i = 0; i < this.posts.size(); i++) {
-      return posts.stream().filter(post -> post.getId() == id).findFirst();
-    }
-    throw new NotFoundException("Post not found");
+    return posts.stream().filter(post -> post.getId() == id).findFirst();
   }
-
-  /*public Post getById(long id) {
-    for (int i = 0; i < this.posts.size(); i++) {
-      Post searchPost = this.posts.get(i);
-      if (searchPost.getId() == id) {
-        return posts.get(i);
-      }
-    }
-    throw new NotFoundException("Post not found");
-  }*/
 
   public Post save(Post post) {
     if (post.getId() == 0) {
