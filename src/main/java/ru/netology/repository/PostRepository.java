@@ -1,5 +1,6 @@
 package ru.netology.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
 
@@ -8,8 +9,8 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// Stub
-public class PostRepository {
+@Repository
+public class PostRepository implements IPostRepository{
   private AtomicInteger postId = new AtomicInteger(1);
   private List<Post> posts = new CopyOnWriteArrayList();
 
